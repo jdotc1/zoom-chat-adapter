@@ -207,10 +207,10 @@ export class ZoomAdapter implements Adapter {
       // Buffer length mismatch throws — treat as invalid signature.
       // ZOOM-506645: Unicode normalization bug — emoji/non-ASCII payloads may fail
       // HMAC verification due to normalization differences between Zoom signing and receipt.
-      // Log raw body hex for diagnosis without exposing full payload.
+      // Never log rejected webhook content: even a truncated hex dump may
+      // disclose private chat messages or credentials to debug log readers.
       this.config.logger.debug(
-        "Signature comparison failed (possible ZOOM-506645 Unicode normalization issue)",
-        { bodyHex: Buffer.from(body).toString("hex").slice(0, 200) }
+        "Signature comparison failed (possible ZOOM-506645 Unicode normalization issue)"
       );
       return false;
     }
